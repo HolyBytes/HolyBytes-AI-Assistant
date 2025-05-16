@@ -14,10 +14,26 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
+        :root {
+            --primary: #10a37f;
+            --primary-hover: #0d8a6c;
+            --secondary: #40414f;
+            --secondary-hover: #4b5563;
+            --background: #343541;
+            --surface: #444654;
+            --text-primary: #ececf1;
+            --text-secondary: #8e8ea0;
+            --error: #ef4444;
+            --error-hover: #dc2626;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+        }
+        
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #343541;
-            color: #d1d5db;
+            background-color: var(--background);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -26,7 +42,7 @@
             height: calc(100vh - 160px);
             overflow-y: auto;
             scrollbar-width: thin;
-            scrollbar-color: #4b5563 #343541;
+            scrollbar-color: var(--secondary) var(--background);
             padding-bottom: 30px;
         }
         
@@ -35,17 +51,16 @@
         }
         
         .chat-container::-webkit-scrollbar-track {
-            background: #343541;
+            background: var(--background);
         }
         
         .chat-container::-webkit-scrollbar-thumb {
-            background-color: #4b5563;
+            background-color: var(--secondary);
             border-radius: 4px;
         }
         
         .message {
-            padding: 24px 0;
-            border-bottom: 1px solid #40414f;
+            padding: 20px 0;
             animation: fadeIn 0.3s ease-in-out;
         }
         
@@ -63,11 +78,13 @@
         }
         
         .user-message {
-            background-color: #343541;
+            background-color: var(--background);
+            border-bottom: 1px solid var(--secondary);
         }
         
         .ai-message {
-            background-color: #444654;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--secondary);
         }
         
         .avatar {
@@ -81,21 +98,25 @@
         }
         
         .user-avatar {
-            background-color: #10a37f;
+            background-color: var(--primary);
+            color: white;
         }
         
         .ai-avatar {
             background-color: #5436da;
+            color: white;
         }
         
         .message-content {
             flex: 1;
             padding-top: 4px;
-            line-height: 1.5;
+            line-height: 1.75;
+            font-size: 16px;
         }
         
         .message-content p {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            word-wrap: break-word;
         }
         
         .message-content p:last-child {
@@ -106,36 +127,69 @@
             background-color: rgba(86, 88, 105, 0.5);
             padding: 2px 4px;
             border-radius: 4px;
-            font-family: monospace;
+            font-family: 'Courier New', Courier, monospace;
             font-size: 0.9em;
+            color: #f8f8f2;
         }
         
         .message-content pre {
             background-color: rgba(86, 88, 105, 0.5);
-            padding: 12px;
+            padding: 16px;
             border-radius: 4px;
             overflow-x: auto;
             margin: 16px 0;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.5;
+        }
+        
+        .message-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .message-content blockquote {
+            border-left: 3px solid var(--primary);
+            padding-left: 16px;
+            margin: 16px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .message-content a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .message-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .message-content ul, 
+        .message-content ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+        
+        .message-content li {
+            margin-bottom: 8px;
         }
         
         .message-actions {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.2s;
             display: flex;
             gap: 8px;
             margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
         
         .message:hover .message-actions {
-            visibility: visible;
             opacity: 1;
         }
         
         .message-action-btn {
             background-color: transparent;
             border: none;
-            color: #8e8ea0;
+            color: var(--text-secondary);
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 4px;
@@ -147,7 +201,7 @@
         
         .message-action-btn:hover {
             background-color: rgba(86, 88, 105, 0.5);
-            color: #fff;
+            color: var(--text-primary);
         }
         
         .input-container {
@@ -156,8 +210,8 @@
             left: 0;
             right: 0;
             padding: 16px;
-            background-color: #343541;
-            border-top: 1px solid #40414f;
+            background-color: var(--background);
+            border-top: 1px solid var(--secondary);
         }
         
         .input-box {
@@ -169,21 +223,22 @@
         .message-input {
             width: 100%;
             padding: 12px 48px 12px 16px;
-            border-radius: 6px;
-            border: 1px solid #565869;
-            background-color: #40414f;
-            color: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--secondary);
+            background-color: var(--surface);
+            color: var(--text-primary);
             font-size: 16px;
             resize: none;
             min-height: 60px;
             max-height: 200px;
             outline: none;
             box-shadow: 0 0 0 1px rgba(32, 33, 35, 0.1);
+            line-height: 1.5;
         }
         
         .message-input:focus {
-            box-shadow: 0 0 0 1px #10a37f;
-            border-color: #10a37f;
+            box-shadow: 0 0 0 1px var(--primary);
+            border-color: var(--primary);
         }
         
         .send-button {
@@ -192,9 +247,9 @@
             bottom: 16px;
             background-color: transparent;
             border: none;
-            color: #8e8ea0;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
             width: 32px;
             height: 32px;
             display: flex;
@@ -204,12 +259,12 @@
         }
         
         .send-button:hover {
-            color: #fff;
-            background-color: rgba(86, 88, 105, 0.5);
+            color: var(--primary);
+            background-color: rgba(16, 163, 127, 0.1);
         }
         
         .send-button:disabled {
-            color: #4b5563;
+            color: var(--secondary);
             cursor: not-allowed;
         }
         
@@ -218,12 +273,14 @@
             padding: 8px 0;
             align-items: center;
             gap: 4px;
+            color: var(--text-secondary);
+            font-style: italic;
         }
         
         .typing-indicator span {
             height: 8px;
             width: 8px;
-            background-color: #8e8ea0;
+            background-color: var(--text-secondary);
             border-radius: 50%;
             display: inline-block;
             animation: typing 1.5s infinite ease-in-out;
@@ -265,17 +322,17 @@
         
         .sidebar-header {
             padding: 0 16px 16px 16px;
-            border-bottom: 1px solid #4b5563;
+            border-bottom: 1px solid var(--secondary);
             margin-bottom: 16px;
         }
         
         .new-chat-btn {
             width: 100%;
             padding: 12px;
-            border: 1px solid #4b5563;
+            border: 1px solid var(--secondary);
             border-radius: 6px;
             background-color: transparent;
-            color: #fff;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -284,7 +341,7 @@
         }
         
         .new-chat-btn:hover {
-            background-color: #2b2c3a;
+            background-color: var(--secondary);
         }
         
         .saved-chats {
@@ -308,11 +365,11 @@
         }
         
         .saved-chat-item:hover {
-            background-color: #2b2c3a;
+            background-color: var(--secondary);
         }
         
         .saved-chat-item.active {
-            background-color: #343541;
+            background-color: var(--background);
         }
         
         .chat-actions {
@@ -324,7 +381,7 @@
             transform: translateY(-50%);
             display: flex;
             gap: 8px;
-            background-color: #2b2c3a;
+            background-color: var(--secondary);
             padding: 4px;
             border-radius: 4px;
             transition: opacity 0.2s;
@@ -338,7 +395,7 @@
         .chat-action-btn {
             background-color: transparent;
             border: none;
-            color: #8e8ea0;
+            color: var(--text-secondary);
             cursor: pointer;
             width: 24px;
             height: 24px;
@@ -349,18 +406,18 @@
         }
         
         .chat-action-btn:hover {
-            background-color: #40414f;
-            color: #fff;
+            background-color: var(--surface);
+            color: var(--text-primary);
         }
         
         .sidebar-footer {
             padding: 16px;
-            border-top: 1px solid #4b5563;
+            border-top: 1px solid var(--secondary);
         }
         
         .version-info {
             font-size: 12px;
-            color: #8e8ea0;
+            color: var(--text-secondary);
             margin-top: 8px;
         }
         
@@ -378,7 +435,7 @@
             justify-content: center;
             cursor: pointer;
             z-index: 50;
-            color: #fff;
+            color: var(--text-primary);
         }
         
         .sidebar-overlay {
@@ -418,7 +475,7 @@
         }
         
         .modal-content {
-            background-color: #343541;
+            background-color: var(--background);
             border-radius: 8px;
             padding: 24px;
             width: 100%;
@@ -442,12 +499,12 @@
             background-color: transparent;
             border: none;
             cursor: pointer;
-            color: #8e8ea0;
+            color: var(--text-secondary);
             font-size: 20px;
         }
         
         .modal-close:hover {
-            color: #fff;
+            color: var(--text-primary);
         }
         
         .modal-body {
@@ -464,15 +521,15 @@
             width: 100%;
             padding: 12px;
             border-radius: 6px;
-            border: 1px solid #565869;
-            background-color: #40414f;
-            color: #fff;
+            border: 1px solid var(--secondary);
+            background-color: var(--surface);
+            color: var(--text-primary);
             font-size: 16px;
             margin-bottom: 16px;
         }
         
         .modal-input:focus {
-            border-color: #10a37f;
+            border-color: var(--primary);
             outline: none;
         }
         
@@ -483,40 +540,41 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
+            transition: background-color 0.2s;
         }
         
         .btn-primary {
-            background-color: #10a37f;
-            color: #fff;
+            background-color: var(--primary);
+            color: white;
         }
         
         .btn-primary:hover {
-            background-color: #0d8a6c;
+            background-color: var(--primary-hover);
         }
         
         .btn-secondary {
             background-color: transparent;
-            border: 1px solid #565869;
-            color: #d1d5db;
+            border: 1px solid var(--secondary);
+            color: var(--text-primary);
         }
         
         .btn-secondary:hover {
-            background-color: #40414f;
+            background-color: var(--secondary);
         }
         
         .btn-danger {
-            background-color: #ef4444;
-            color: #fff;
+            background-color: var(--error);
+            color: white;
         }
         
         .btn-danger:hover {
-            background-color: #dc2626;
+            background-color: var(--error-hover);
         }
         
         .empty-chats {
             padding: 16px;
             text-align: center;
-            color: #8e8ea0;
+            color: var(--text-secondary);
         }
         
         .chat-title {
@@ -528,8 +586,148 @@
         
         .chat-date {
             font-size: 12px;
-            color: #8e8ea0;
+            color: var(--text-secondary);
             margin-top: 4px;
+        }
+        
+        /* File upload styles */
+        .file-upload-container {
+            position: absolute;
+            left: 12px;
+            bottom: 16px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .file-upload-btn {
+            background-color: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        
+        .file-upload-btn:hover {
+            color: var(--primary);
+            background-color: rgba(16, 163, 127, 0.1);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        /* Message editing */
+        .editable-message {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--secondary);
+            background-color: var(--surface);
+            color: var(--text-primary);
+            font-size: 16px;
+            resize: none;
+            min-height: 100px;
+            outline: none;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+        
+        .editable-message:focus {
+            border-color: var(--primary);
+        }
+        
+        .edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        /* Status messages */
+        .status-message {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-info {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: var(--info);
+            border-left: 3px solid var(--info);
+        }
+        
+        .status-warning {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border-left: 3px solid var(--warning);
+        }
+        
+        .status-error {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+            border-left: 3px solid var(--error);
+        }
+        
+        .status-success {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border-left: 3px solid var(--success);
+        }
+        
+        /* Search bar */
+        .search-container {
+            padding: 8px 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--secondary);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--secondary);
+            background-color: var(--surface);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+        
+        /* Attachment preview */
+        .attachment-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .attachment-item {
+            background-color: var(--secondary);
+            padding: 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .attachment-remove {
+            color: var(--error);
+            cursor: pointer;
         }
         
         @media (max-width: 768px) {
@@ -540,6 +738,10 @@
             
             .sidebar {
                 width: 85%;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 180px);
             }
         }
     </style>
@@ -560,6 +762,10 @@
                 <i class="fas fa-plus"></i>
                 <span>Chat Baru</span>
             </button>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="chatSearch" placeholder="Cari chat...">
         </div>
         
         <div class="saved-chats" id="savedChatsContainer">
@@ -599,6 +805,12 @@
     <!-- Input Area -->
     <div class="input-container">
         <div class="input-box">
+            <div class="file-upload-container">
+                <button class="file-upload-btn" id="uploadFileBtn" title="Unggah file">
+                    <i class="fas fa-paperclip"></i>
+                </button>
+                <input type="file" class="file-input" id="fileInput" multiple accept="image/*, video/*, .pdf, .doc, .docx, .xls, .xlsx">
+            </div>
             <textarea id="userInput" class="message-input" placeholder="Ketik pesan Anda di sini..." rows="1"></textarea>
             <button class="send-button" id="sendButton" disabled>
                 <i class="fas fa-paper-plane"></i>
@@ -606,7 +818,7 @@
         </div>
     </div>
     
-    <!-- Modal for Chat Actions -->
+    <!-- Modals -->
     <div class="modal" id="chatModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -623,7 +835,6 @@
         </div>
     </div>
     
-    <!-- Delete Confirmation Modal -->
     <div class="modal" id="deleteModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -636,6 +847,37 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="deleteModalCancel">Batal</button>
                 <button class="btn btn-danger" id="deleteModalConfirm">Hapus</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Pesan</h3>
+                <button class="modal-close" id="editModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea class="editable-message" id="editMessageInput"></textarea>
+                <div class="edit-actions">
+                    <button class="btn btn-secondary" id="editCancelBtn">Batal</button>
+                    <button class="btn btn-primary" id="editSaveBtn">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="fileModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Pratinjau File</h3>
+                <button class="modal-close" id="fileModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="filePreviewContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="fileModalCloseBtn">Tutup</button>
             </div>
         </div>
     </div>
@@ -654,6 +896,11 @@
         const sidebarOverlay = document.getElementById('sidebarOverlay');
         const newChatBtn = document.getElementById('newChatBtn');
         const savedChatsContainer = document.getElementById('savedChatsContainer');
+        const chatSearch = document.getElementById('chatSearch');
+        
+        // File upload elements
+        const uploadFileBtn = document.getElementById('uploadFileBtn');
+        const fileInput = document.getElementById('fileInput');
         
         // Modals
         const chatModal = document.getElementById('chatModal');
@@ -668,11 +915,24 @@
         const deleteModalCancel = document.getElementById('deleteModalCancel');
         const deleteModalConfirm = document.getElementById('deleteModalConfirm');
         
+        const editModal = document.getElementById('editModal');
+        const editMessageInput = document.getElementById('editMessageInput');
+        const editModalClose = document.getElementById('editModalClose');
+        const editCancelBtn = document.getElementById('editCancelBtn');
+        const editSaveBtn = document.getElementById('editSaveBtn');
+        
+        const fileModal = document.getElementById('fileModal');
+        const filePreviewContent = document.getElementById('filePreviewContent');
+        const fileModalClose = document.getElementById('fileModalClose');
+        const fileModalCloseBtn = document.getElementById('fileModalCloseBtn');
+        
         // State variables
         let currentChatId = null;
         let isTyping = false;
         let activeModalAction = null;
         let targetChatId = null;
+        let targetMessageIndex = null;
+        let attachments = [];
         
         // Initialize App
         function initializeApp() {
@@ -701,6 +961,13 @@
             // New chat button
             newChatBtn.addEventListener('click', createNewChat);
             
+            // Chat search
+            chatSearch.addEventListener('input', handleChatSearch);
+            
+            // File upload
+            uploadFileBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileUpload);
+            
             // Modal handlers
             modalClose.addEventListener('click', closeModals);
             modalCancel.addEventListener('click', closeModals);
@@ -709,6 +976,13 @@
             deleteModalClose.addEventListener('click', closeModals);
             deleteModalCancel.addEventListener('click', closeModals);
             deleteModalConfirm.addEventListener('click', handleDeleteConfirm);
+            
+            editModalClose.addEventListener('click', closeModals);
+            editCancelBtn.addEventListener('click', closeModals);
+            editSaveBtn.addEventListener('click', handleEditSave);
+            
+            fileModalClose.addEventListener('click', closeModals);
+            fileModalCloseBtn.addEventListener('click', closeModals);
             
             // Load chats
             loadChats();
@@ -723,6 +997,21 @@
         function toggleSidebar() {
             sidebar.classList.toggle('open');
             sidebarOverlay.classList.toggle('open');
+        }
+        
+        // Handle chat search
+        function handleChatSearch() {
+            const searchTerm = chatSearch.value.toLowerCase();
+            const chatItems = document.querySelectorAll('.saved-chat-item');
+            
+            chatItems.forEach(item => {
+                const title = item.querySelector('.chat-title').textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         }
         
         // Load chats from localStorage
@@ -754,7 +1043,8 @@
                 title: 'Chat Baru',
                 messages: [],
                 created: new Date().toISOString(),
-                lastUpdated: new Date().toISOString()
+                lastUpdated: new Date().toISOString(),
+                attachments: []
             };
             
             // Save the new chat
@@ -781,6 +1071,7 @@
             if (!chat) return;
             
             currentChatId = chatId;
+            attachments = chat.attachments || [];
             
             // Update active chat in sidebar
             updateActiveChatInSidebar();
@@ -809,6 +1100,17 @@
             chat.messages.forEach((message, index) => {
                 const messageEl = createMessageElement(message, index);
                 chatContainer.appendChild(messageEl);
+                
+                // Add attachments if any
+                if (message.attachments && message.attachments.length > 0) {
+                    const attachmentsContainer = document.createElement('div');
+                    attachmentsContainer.className = 'attachment-preview';
+                    message.attachments.forEach(attachment => {
+                        const attachmentEl = createAttachmentElement(attachment);
+                        attachmentsContainer.appendChild(attachmentEl);
+                    });
+                    messageEl.querySelector('.message-content').appendChild(attachmentsContainer);
+                }
             });
             
             // Scroll to bottom
@@ -879,133 +1181,109 @@
                 savedChatsContainer.appendChild(chatEl);
             });
             
-            // Add event listeners to action buttons
+                        // Add event listeners to chat action buttons
             document.querySelectorAll('.rename-chat').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    openRenameModal(btn.dataset.chatId);
+                    targetChatId = btn.dataset.chatId;
+                    activeModalAction = 'rename';
+                    openChatModal('Ubah Nama Chat', 'Masukkan nama chat baru');
                 });
             });
-            
+
             document.querySelectorAll('.delete-chat').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    openDeleteModal(btn.dataset.chatId);
+                    targetChatId = btn.dataset.chatId;
+                    deleteModal.classList.add('open');
                 });
             });
         }
-        
+
         // Update active chat in sidebar
         function updateActiveChatInSidebar() {
             document.querySelectorAll('.saved-chat-item').forEach(item => {
+                item.classList.remove('active');
                 if (item.dataset.chatId === currentChatId) {
                     item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
                 }
             });
         }
-        
-        // Handle send message
+
+        // Get saved chats from localStorage
+        function getSavedChats() {
+            const savedChats = localStorage.getItem('holyBytes_chats');
+            return savedChats ? JSON.parse(savedChats) : [];
+        }
+
+        // Save chats to localStorage
+        function saveChats(chats) {
+            localStorage.setItem('holyBytes_chats', JSON.stringify(chats));
+        }
+
+        // Handle sending a message
         async function handleSendMessage() {
             const messageText = userInput.value.trim();
-            if (!messageText) return;
-            
-            // Clear input
-            userInput.value = '';
-            userInput.style.height = 'auto';
-            userInput.focus();
-            sendButton.disabled = true;
-            
-            // Get current chat
-            const savedChats = getSavedChats();
-            const currentChat = savedChats.find(chat => chat.id === currentChatId);
-            
-            if (!currentChat) return;
-            
+            if (!messageText && attachments.length === 0) return;
+
             // Create user message
             const userMessage = {
                 role: 'user',
                 content: messageText,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                attachments: [...attachments]
             };
-            
-            // Add user message to chat
-            currentChat.messages.push(userMessage);
-            
-            // Update chat title if it's the first message
-            if (currentChat.messages.length === 1) {
-                // Use first 30 chars of message as title
-                currentChat.title = messageText.substring(0, 30) + (messageText.length > 30 ? '...' : '');
-            }
-            
-            // Update last updated timestamp
-            currentChat.lastUpdated = new Date().toISOString();
-            
-                       // Save chat
-            saveChats(savedChats);
-            
-            // Render user message
-            const userMessageEl = createMessageElement(userMessage);
-            chatContainer.appendChild(userMessageEl);
-            
-            // Show typing indicator
-            isTyping = true;
-            const typingIndicator = createTypingIndicator();
-            chatContainer.appendChild(typingIndicator);
+
+            // Add message to chat
+            addMessageToChat(userMessage);
+
+            // Clear input and attachments
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            sendButton.disabled = true;
+            attachments = [];
             scrollToBottom();
-            
+
+            // Show typing indicator
+            showTypingIndicator();
+
             try {
                 // Prepare messages for API
-                const messagesForApi = currentChat.messages.map(msg => ({
-                    role: msg.role,
-                    content: msg.content
-                }));
-                
+                const savedChats = getSavedChats();
+                const currentChat = savedChats.find(c => c.id === currentChatId);
+                const messagesForApi = prepareMessagesForApi(currentChat.messages);
+
                 // Call AI API
                 const aiResponse = await fetchAIResponse(messagesForApi);
-                
-                // Remove typing indicator
-                isTyping = false;
-                chatContainer.removeChild(typingIndicator);
-                
-                // Create AI message
+
+                // Add AI response to chat
                 const aiMessage = {
                     role: 'assistant',
                     content: aiResponse,
                     timestamp: new Date().toISOString()
                 };
-                
-                // Add AI message to chat
-                currentChat.messages.push(aiMessage);
-                currentChat.lastUpdated = new Date().toISOString();
-                saveChats(savedChats);
-                
-                // Render AI message
-                const aiMessageEl = createMessageElement(aiMessage);
-                chatContainer.appendChild(aiMessageEl);
-                scrollToBottom();
-                
+
+                addMessageToChat(aiMessage);
             } catch (error) {
                 console.error('Error getting AI response:', error);
-                
-                // Remove typing indicator
-                isTyping = false;
-                chatContainer.removeChild(typingIndicator);
-                
-                // Show error message
-                const errorMessage = {
-                    role: 'assistant',
-                    content: 'Maaf, terjadi kesalahan saat memproses permintaan Anda. Silakan coba lagi.',
-                    timestamp: new Date().toISOString()
-                };
-                
-                const errorMessageEl = createMessageElement(errorMessage);
-                chatContainer.appendChild(errorMessageEl);
+                showErrorMessage('Gagal mendapatkan respons dari AI. Silakan coba lagi.');
+            } finally {
+                // Hide typing indicator
+                hideTypingIndicator();
                 scrollToBottom();
             }
         }
-        
+
+        // Prepare messages for API
+        function prepareMessagesForApi(messages) {
+            return messages.map(msg => {
+                return {
+                    role: msg.role,
+                    content: msg.content
+                };
+            });
+        }
+
         // Fetch AI response from API
         async function fetchAIResponse(messages) {
             const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -1023,46 +1301,128 @@
                     max_tokens: 2000
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
             }
-            
+
             const data = await response.json();
             return data.choices[0].message.content;
         }
-        
+
+        // Add message to current chat
+        function addMessageToChat(message) {
+            const savedChats = getSavedChats();
+            const chatIndex = savedChats.findIndex(c => c.id === currentChatId);
+
+            if (chatIndex === -1) return;
+
+            // Add message
+            savedChats[chatIndex].messages.push(message);
+            
+            // Update chat title if it's the first user message
+            if (message.role === 'user' && savedChats[chatIndex].messages.length === 1) {
+                const firstMessageContent = message.content.length > 30 
+                    ? message.content.substring(0, 30) + '...' 
+                    : message.content;
+                savedChats[chatIndex].title = firstMessageContent || 'Chat Tanpa Judul';
+            }
+
+            // Update last updated time
+            savedChats[chatIndex].lastUpdated = new Date().toISOString();
+
+            // Save chats
+            saveChats(savedChats);
+
+            // Update sidebar
+            renderSavedChats(savedChats);
+
+            // Create and append message element
+            const messageEl = createMessageElement(message, savedChats[chatIndex].messages.length - 1);
+            
+            // If this is an AI message, remove typing indicator first
+            if (message.role === 'assistant') {
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) {
+                    chatContainer.removeChild(typingIndicator);
+                }
+            }
+            
+            chatContainer.appendChild(messageEl);
+            scrollToBottom();
+        }
+
         // Create message element
         function createMessageElement(message, index) {
             const messageEl = document.createElement('div');
-            messageEl.classList.add('message');
-            messageEl.classList.add(message.role === 'user' ? 'user-message' : 'ai-message');
-            
-            const avatar = message.role === 'user' ? 
-                '<div class="avatar user-avatar"><i class="fas fa-user"></i></div>' : 
-                '<div class="avatar ai-avatar"><i class="fas fa-robot"></i></div>';
-            
-            // Format content with line breaks and code blocks
-            let formattedContent = message.content
-                .replace(/\n/g, '<br>')
-                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-                .replace(/`([^`]+)`/g, '<code>$1</code>');
-            
+            messageEl.className = `message ${message.role === 'user' ? 'user-message' : 'ai-message'}`;
+            messageEl.dataset.messageIndex = index;
+
+            const avatarIcon = message.role === 'user' ? 'fa-user' : 'fa-robot';
+            const avatarClass = message.role === 'user' ? 'user-avatar' : 'ai-avatar';
+
+            let contentHtml = '';
+            if (typeof message.content === 'string') {
+                // Simple markdown parsing for formatting
+                contentHtml = message.content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // bold
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>') // italic
+                    .replace(/`(.*?)`/g, '<code>$1</code>') // inline code
+                    .replace(/```([a-z]*)\n([\s\S]*?)\n```/g, '<pre><code class="language-$1">$2</code></pre>') // code blocks
+                    .replace(/# (.*?)(\n|$)/g, '<h3>$1</h3>') // headings
+                    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>'); // links
+            }
+
             messageEl.innerHTML = `
                 <div class="message-container">
-                    ${avatar}
-                    <div class="message-content">${formattedContent}</div>
+                    <div class="avatar ${avatarClass}">
+                        <i class="fas ${avatarIcon}"></i>
+                    </div>
+                    <div class="message-content">
+                        ${contentHtml}
+                    </div>
                 </div>
             `;
-            
+
+            // Add message actions for user messages
+            if (message.role === 'user') {
+                const messageActions = document.createElement('div');
+                messageActions.className = 'message-actions';
+                messageActions.innerHTML = `
+                    <button class="message-action-btn edit-message" data-message-index="${index}">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="message-action-btn delete-message" data-message-index="${index}">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                `;
+                messageEl.querySelector('.message-container').appendChild(messageActions);
+
+                // Add event listeners to action buttons
+                messageEl.querySelector('.edit-message').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    targetMessageIndex = index;
+                    editMessageInput.value = message.content;
+                    editModal.classList.add('open');
+                });
+
+                messageEl.querySelector('.delete-message').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    targetMessageIndex = index;
+                    activeModalAction = 'delete_message';
+                    deleteModal.classList.add('open');
+                });
+            }
+
             return messageEl;
         }
-        
-        // Create typing indicator
-        function createTypingIndicator() {
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            isTyping = true;
             const typingEl = document.createElement('div');
-            typingEl.classList.add('message', 'ai-message');
-            
+            typingEl.id = 'typingIndicator';
+            typingEl.className = 'message ai-message';
             typingEl.innerHTML = `
                 <div class="message-container">
                     <div class="avatar ai-avatar">
@@ -1077,99 +1437,225 @@
                     </div>
                 </div>
             `;
-            
-            return typingEl;
+            chatContainer.appendChild(typingEl);
+            scrollToBottom();
         }
-        
-        // Scroll chat to bottom
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            isTyping = false;
+            const typingEl = document.getElementById('typingIndicator');
+            if (typingEl) {
+                chatContainer.removeChild(typingEl);
+            }
+        }
+
+        // Show error message
+        function showErrorMessage(message) {
+            const errorEl = document.createElement('div');
+            errorEl.className = 'status-message status-error';
+            errorEl.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+            `;
+            chatContainer.appendChild(errorEl);
+            scrollToBottom();
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                if (errorEl.parentNode) {
+                    chatContainer.removeChild(errorEl);
+                }
+            }, 5000);
+        }
+
+        // Scroll to bottom of chat
         function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            setTimeout(() => {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 100);
         }
-        
-        // Get saved chats from localStorage
-        function getSavedChats() {
-            const savedChats = localStorage.getItem('holyBytes_chats');
-            return savedChats ? JSON.parse(savedChats) : [];
-        }
-        
-        // Save chats to localStorage
-        function saveChats(chats) {
-            localStorage.setItem('holyBytes_chats', JSON.stringify(chats));
-            renderSavedChats(chats);
-        }
-        
-        // Open rename modal
-        function openRenameModal(chatId) {
-            const savedChats = getSavedChats();
-            const chat = savedChats.find(c => c.id === chatId);
+
+        // Handle file upload
+        function handleFileUpload(e) {
+            const files = Array.from(e.target.files);
             
-            if (!chat) return;
+            files.forEach(file => {
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    showErrorMessage(`File ${file.name} terlalu besar (maksimal 5MB)`);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    attachments.push({
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        data: event.target.result
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Reset file input
+            fileInput.value = '';
+        }
+
+        // Create attachment element
+        function createAttachmentElement(attachment) {
+            const attachmentEl = document.createElement('div');
+            attachmentEl.className = 'attachment-item';
             
-            targetChatId = chatId;
-            activeModalAction = 'rename';
-            chatNameInput.value = chat.title;
-            modalTitle.textContent = 'Ubah Nama Chat';
+            let icon = 'fa-file';
+            if (attachment.type.startsWith('image/')) icon = 'fa-image';
+            else if (attachment.type.startsWith('video/')) icon = 'fa-video';
+            else if (attachment.type === 'application/pdf') icon = 'fa-file-pdf';
+            else if (attachment.type.includes('word')) icon = 'fa-file-word';
+            else if (attachment.type.includes('excel')) icon = 'fa-file-excel';
+            
+            attachmentEl.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${attachment.name}</span>
+                <i class="fas fa-times attachment-remove"></i>
+            `;
+            
+            // Add click event to view attachment
+            attachmentEl.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('attachment-remove')) {
+                    previewAttachment(attachment);
+                }
+            });
+            
+            // Add click event to remove attachment
+            attachmentEl.querySelector('.attachment-remove').addEventListener('click', (e) => {
+                e.stopPropagation();
+                attachments = attachments.filter(a => a.name !== attachment.name);
+            });
+            
+            return attachmentEl;
+        }
+
+        // Preview attachment
+        function previewAttachment(attachment) {
+            filePreviewContent.innerHTML = '';
+            
+            if (attachment.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = attachment.data;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '500px';
+                filePreviewContent.appendChild(img);
+            } else if (attachment.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.src = attachment.data;
+                video.controls = true;
+                video.style.maxWidth = '100%';
+                filePreviewContent.appendChild(video);
+            } else {
+                filePreviewContent.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-file" style="font-size: 48px; margin-bottom: 16px;"></i>
+                        <h3>${attachment.name}</h3>
+                        <p>${(attachment.size / 1024).toFixed(2)} KB</p>
+                        <p>File ini tidak dapat dipratinjau. Anda dapat mengunduhnya untuk melihat isinya.</p>
+                        <a href="${attachment.data}" download="${attachment.name}" class="btn btn-primary" style="margin-top: 16px;">
+                            <i class="fas fa-download"></i> Unduh
+                        </a>
+                    </div>
+                `;
+            }
+            
+            fileModal.classList.add('open');
+        }
+
+        // Modal handlers
+        function openChatModal(title, placeholder) {
+            modalTitle.textContent = title;
+            chatNameInput.placeholder = placeholder;
+            
+            if (activeModalAction === 'rename') {
+                const savedChats = getSavedChats();
+                const chat = savedChats.find(c => c.id === targetChatId);
+                if (chat) {
+                    chatNameInput.value = chat.title;
+                }
+            }
+            
             chatModal.classList.add('open');
         }
-        
-        // Open delete modal
-        function openDeleteModal(chatId) {
-            targetChatId = chatId;
-            activeModalAction = 'delete';
-            deleteModal.classList.add('open');
-        }
-        
-        // Close all modals
+
         function closeModals() {
             chatModal.classList.remove('open');
             deleteModal.classList.remove('open');
+            editModal.classList.remove('open');
+            fileModal.classList.remove('open');
+            
             activeModalAction = null;
             targetChatId = null;
+            targetMessageIndex = null;
         }
-        
-        // Handle modal save
+
         function handleModalSave() {
             if (activeModalAction === 'rename' && targetChatId) {
-                const newName = chatNameInput.value.trim();
-                if (!newName) return;
-                
                 const savedChats = getSavedChats();
                 const chatIndex = savedChats.findIndex(c => c.id === targetChatId);
                 
                 if (chatIndex !== -1) {
-                    savedChats[chatIndex].title = newName;
+                    savedChats[chatIndex].title = chatNameInput.value.trim() || 'Chat Tanpa Judul';
                     saveChats(savedChats);
-                    
-                    // If this is the current chat, update the title in sidebar
-                    if (targetChatId === currentChatId) {
-                        updateActiveChatInSidebar();
-                    }
+                    renderSavedChats(savedChats);
                 }
             }
             
             closeModals();
         }
-        
-        // Handle delete confirmation
+
         function handleDeleteConfirm() {
-            if (!targetChatId) return;
-            
-            const savedChats = getSavedChats();
-            const updatedChats = savedChats.filter(c => c.id !== targetChatId);
-            
-            // If we're deleting the current chat, load another one or create new
-            if (targetChatId === currentChatId) {
-                if (updatedChats.length > 0) {
-                    loadChat(updatedChats[0].id);
-                } else {
+            if (activeModalAction === 'delete_message' && targetMessageIndex !== null) {
+                // Delete specific message
+                const savedChats = getSavedChats();
+                const chatIndex = savedChats.findIndex(c => c.id === currentChatId);
+                
+                if (chatIndex !== -1) {
+                    savedChats[chatIndex].messages.splice(targetMessageIndex, 1);
+                    savedChats[chatIndex].lastUpdated = new Date().toISOString();
+                    saveChats(savedChats);
+                    loadChat(currentChatId);
+                }
+            } else if (targetChatId) {
+                // Delete entire chat
+                const savedChats = getSavedChats();
+                const updatedChats = savedChats.filter(c => c.id !== targetChatId);
+                saveChats(updatedChats);
+                
+                // If we deleted the current chat, create a new one
+                if (targetChatId === currentChatId) {
                     createNewChat();
+                } else {
+                    renderSavedChats(updatedChats);
                 }
             }
             
-            saveChats(updatedChats);
             closeModals();
         }
-        
+
+        function handleEditSave() {
+            if (targetMessageIndex !== null) {
+                const savedChats = getSavedChats();
+                const chatIndex = savedChats.findIndex(c => c.id === currentChatId);
+                
+                if (chatIndex !== -1) {
+                    savedChats[chatIndex].messages[targetMessageIndex].content = editMessageInput.value.trim();
+                    savedChats[chatIndex].lastUpdated = new Date().toISOString();
+                    saveChats(savedChats);
+                    loadChat(currentChatId);
+                }
+            }
+            
+            closeModals();
+        }
+
         // Initialize the app when DOM is loaded
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
